@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[4]:
-
-
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
@@ -12,9 +6,7 @@ from tqdm import tqdm
 import os
 from tkinter import messagebox
 from pytube import YouTube
-
-if os.path.isdir('./videos') == False:
-    os.mkdir('./videos')
+from tkinter import filedialog
 
 class videoDownloader:
     def __init__(self, master):
@@ -36,30 +28,32 @@ class videoDownloader:
         self.address1=tk.Entry(self.frame1, textvariable = self.name_var1, font = ('calibre',10,'normal')).pack()
         self.address2=tk.Entry(self.frame2, textvariable = self.name_var2, font = ('calibre',10,'normal')).pack()
     
-        self.label = Label(master, text="This product is owned by Manvendra Singh")
+        self.label = Label(master, text="This product is created by Manvendra Singh")
         self.label.pack()
 
-        self.greet_button = Button(self.frame1, text="Greet", command=self.download_video)
+        self.greet_button = Button(self.frame1, text="Download", command=self.download_video)
         self.greet_button.pack()
 
-        self.close_button = Button(self.frame2, text="Greet", command=self.download_playlist)
+        self.close_button = Button(self.frame2, text="Download", command=self.download_playlist)
         self.close_button.pack()
 
     def download_video(self):
+        folder_selected = filedialog.askdirectory(title = 'Select the folder')
         try: 
             url =YouTube(str(self.name_var1.get()))
             video = url.streams.first()
-            video.download('./videos/') 
+            video.download(folder_selected) 
         except: 
             messagebox.showerror("showerror","Error") 
     
     def download_playlist(self):
+        folder_selected = filedialog.askdirectory(title = 'Select the folder')
         playlist = Playlist(str(self.name_var2.get()))
         try:
             print('Number of downloadable videos in playlist: %s' % len(playlist.video_urls))
 
             for video in tqdm(playlist.videos):
-                video.streams.first().download('./videos/')
+                video.streams.first().download(folder_selected)
         except:
             messagebox.showerror("showerror","Invalid link, please try again")
 
@@ -67,4 +61,3 @@ root = Tk()
 root.geometry("%dx%d" % (500, 500))
 my_gui = videoDownloader(root)
 root.mainloop()
-
